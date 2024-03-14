@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import datetime
 
 
 class Parser:
@@ -15,9 +16,9 @@ class Parser:
         В словарях присутствуют поля:
             name: название фильма
             age: возрастное ограничение
-            country: страны-создатели через пробел
+            year_and_country: год производства страны-создатели через пробел
             genres: жанры через пробел
-            show_and_price: зал и цена через пробел. каждый сеанс это элемент списка
+            show_and_price: зал и цена через табуляцию. каждый сеанс это элемент списка
             time: время показа. каждый сеанс это элемент списка
 
             show_and_price и time должны быть равной длины.
@@ -31,10 +32,14 @@ class CinemaArtHollNorilskParser(Parser):
     '''
     Парсер для Синема Арт Холла в Норильске
     '''
-    def __init__(self):
+    def __init__(self, date=datetime.date.today()):
+        '''
+        :param date: дата. Объект datetime.date
+        '''
         super().__init__()
 
-        response = requests.get('https://cinemaarthall.ru/')
+        params = {'date': date.strftime('%Y/%m/%d')}
+        response = requests.get('https://cinemaarthall.ru/', params=params)
         soup = BeautifulSoup(response.text, 'lxml')
         info = soup.find_all('div', {'class': 'event-info'})
 
@@ -50,8 +55,5 @@ class CinemaArtHollNorilskParser(Parser):
             time = soup_.find_all('div', {'class': 'show-time'})
             time = [el.text for el in time]
 
-            self.events.append({'name': name, 'age': age, 'country': country,
+            self.events.append({'name': name, 'age': age, 'year_and_country': country,
                                 'genres': genres, 'show_and_price': show_and_price, 'time': time})
-
-
-
