@@ -3,17 +3,36 @@ import requests
 
 
 class Parser:
+    '''
+    Родительский класс парсера расписания кино
+    '''
     def __init__(self):
-        pass
+        self.events = []
 
     def get_events(self):
+        '''
+        Метод возвращает список словарей с информацией о расписании.
+        В словарях присутствуют поля:
+            name: название фильма
+            age: возрастное ограничение
+            country: страны-создатели через пробел
+            genres: жанры через пробел
+            show_and_price: зал и цена через пробел. каждый сеанс это элемент списка
+            time: время показа. каждый сеанс это элемент списка
+
+            show_and_price и time должны быть равной длины.
+            сеанс show_and_price[i] должен соответствовать сеансу time[i]
+        :return: список словарей с расписанием
+        '''
         return self.events
 
 
 class CinemaArtHollNorilskParser(Parser):
+    '''
+    Парсер для Синема Арт Холла в Норильске
+    '''
     def __init__(self):
         super().__init__()
-        self.events = []
 
         response = requests.get('https://cinemaarthall.ru/')
         soup = BeautifulSoup(response.text, 'lxml')
@@ -32,7 +51,7 @@ class CinemaArtHollNorilskParser(Parser):
             time = [el.text for el in time]
 
             self.events.append({'name': name, 'age': age, 'country': country,
-                                'genres': genres, 'show': show_and_price, 'time': time})
+                                'genres': genres, 'show_and_price': show_and_price, 'time': time})
 
 
-print(CinemaArtHollNorilskParser().get_events())
+
