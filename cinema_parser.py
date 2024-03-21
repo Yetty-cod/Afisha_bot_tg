@@ -18,14 +18,30 @@ class Parser:
             age: возрастное ограничение
             year_and_country: год производства страны-создатели через пробел
             genres: жанры через пробел
-            show_and_price: зал и цена через табуляцию. каждый сеанс это элемент списка
+            price: цена. каждый сеанс это элемент списка
             time: время показа. каждый сеанс это элемент списка
 
-            show_and_price и time должны быть равной длины.
-            сеанс show_and_price[i] должен соответствовать сеансу time[i]
+            price и time должны быть равной длины.
+            сеанс price[i] должен соответствовать сеансу time[i]
         :return: список словарей с расписанием
         '''
         return self.events
+
+    def get_format_events(self):
+        res = []
+        if not self.events:
+            return 'Здесь пока пусто'
+
+        for el in self.events:
+            cinema = f'<b>{el["name"]}</b>\n' \
+                     f'<i>{el["year_and_country"]}\n' \
+                     f'{el["genres"]}\n' \
+                     f'{el["age"]}</i>\n'
+            for i in range(len(el['price'])):
+                cinema += f'~ {el["price"][i]}    {el["time"][i]}\n'
+            res.append(cinema)
+
+        return '\n\n'.join(res)
 
 
 class CinemaArtHollNorilskParser(Parser):
@@ -50,10 +66,10 @@ class CinemaArtHollNorilskParser(Parser):
             age = soup_.find('div', {'class': 'age'}).text
             country = soup_.find('div', {'class': 'country'}).text
             genres = soup_.find('div', {'class': 'genres'}).text
-            show_and_price = soup_.find_all('div', {'class': 'show'})
-            show_and_price = [el['title'].replace('\n\n', '\t').replace('\u2009', '') for el in show_and_price]
+            price = soup_.find_all('div', {'class': 'price'})
+            price = [el.text.replace(' ', ' ') for el in price]
             time = soup_.find_all('div', {'class': 'show-time'})
             time = [el.text for el in time]
 
             self.events.append({'name': name, 'age': age, 'year_and_country': country,
-                                'genres': genres, 'show_and_price': show_and_price, 'time': time})
+                                'genres': genres, 'price': price, 'time': time})

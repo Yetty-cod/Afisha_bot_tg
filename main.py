@@ -1,4 +1,6 @@
 import logging
+
+from telegram import constants
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
 from cinema_parser import CinemaArtHollNorilskParser
 
@@ -11,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 async def afisha_today(update, context):
-    await update.message.reply_text(CinemaArtHollNorilskParser().get_events())
+    await update.message.reply_text(CinemaArtHollNorilskParser().get_format_events(),
+                                    parse_mode=constants.ParseMode.HTML)
 
 
 def main():
