@@ -1,6 +1,6 @@
 import logging
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
-from parser import CinemaArtHollNorilskParser
+from cinema_parser import CinemaArtHollNorilskParser
 
 # Запускаем логгирование
 logging.basicConfig(
