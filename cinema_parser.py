@@ -44,7 +44,7 @@ class Parser:
         return '\n\n'.join(res)
 
 
-class CinemaArtHollNorilskParser(Parser):
+class CinemaArtHallNorilskParser(Parser):
     '''
     Парсер для Синема Арт Холла в Норильске
     '''
