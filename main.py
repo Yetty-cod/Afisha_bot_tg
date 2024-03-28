@@ -34,19 +34,21 @@ async def write_cinema(update, context):
 
 async def today(update, context):
     global cinema
-    await update.message.reply_text(all_cinemas[cinema]().get_format_events())
+    await update.message.reply_text(all_cinemas[cinema]().get_format_events(), parse_mode=constants.ParseMode.HTML)
 
 
 async def tomorrow(update, context):
     global cinema
     date_ = date.today() + timedelta(days=1)
-    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events())
+    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events(),
+                                    parse_mode=constants.ParseMode.HTML)
 
 
 async def after_tomorrow(update, context):
     global cinema
     date_ = date.today() + timedelta(days=2)
-    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events())
+    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events(),
+                                    parse_mode=constants.ParseMode.HTML)
 
 
 def main():
