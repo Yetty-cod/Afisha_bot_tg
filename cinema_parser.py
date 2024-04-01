@@ -9,6 +9,7 @@ class Parser:
     '''
     def __init__(self):
         self.events = []
+        self.date = ''
 
     def get_events(self):
         '''
@@ -28,9 +29,9 @@ class Parser:
         return self.events
 
     def get_format_events(self):
-        res = []
+        res = [f"Синема Арт Холл, Норильск\n{self.date}"]
         if not self.events:
-            return 'Здесь пока пусто'
+            return f'Синема Арт Холл, Норильск\n{self.date}\n\nЗдесь пока пусто'
 
         for el in self.events:
             cinema = f'<b>{el["name"]}</b>\n' \
@@ -54,7 +55,8 @@ class CinemaArtHallNorilskParser(Parser):
         '''
         super().__init__()
 
-        params = {'date': date.strftime('%Y/%m/%d')}
+        self.date = date.strftime('%Y/%m/%d')
+        params = {'date': self.date}
         response = requests.get('https://cinemaarthall.ru/', params=params)
         soup = BeautifulSoup(response.text, 'lxml')
         info = soup.find_all('div', {'class': 'event-info'})
