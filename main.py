@@ -9,45 +9,50 @@ from datetime import date, timedelta
 
 # Запускаем логгирование
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
 all_cinemas = {'CinemaArtHall': CinemaArtHallNorilskParser}
-cinema = ''
+cinema = dict()
 
 
 async def start(update, context):
-    reply_keyboard = [["/CinemaArtHall"]]
+    reply_keyboard = [["CinemaArtHall"]]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text("Я афиша-бот. Какую информацию вы хотите получить?", reply_markup=markup)
 
 
 async def write_cinema(update, context):
     global cinema
-    cinema = update.message.text.strip('/')
-    day = [["/today", "/tomorrow", "/after_tomorrow"]]
-    day_markup = ReplyKeyboardMarkup(day, one_time_keyboard=True)
+    if update.message.text.strip('/') in all_cinemas:
+        logger.info(update.message.chat_id)
+        cinema[update.message.chat_id] = update.message.text.strip('/')
+        day = [["/today", "/tomorrow", "/after_tomorrow"]]
+        day_markup = ReplyKeyboardMarkup(day, one_time_keyboard=True)
 
-    await update.message.reply_text("На какой день вы хотите получить расписание?", reply_markup=day_markup)
+        await update.message.reply_text("На какой день вы хотите получить расписание?", reply_markup=day_markup)
+    else:
+        await update.message.reply_text("Такого кинотеатра ещё нет:(")
 
 
 async def today(update, context):
     global cinema
-    await update.message.reply_text(all_cinemas[cinema]().get_format_events(), parse_mode=constants.ParseMode.HTML)
+    await update.message.reply_text(
+        all_cinemas[cinema[update.message.chat_id]]().get_format_events(), parse_mode=constants.ParseMode.HTML)
 
 
 async def tomorrow(update, context):
     global cinema
     date_ = date.today() + timedelta(days=1)
-    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events(),
+    await update.message.reply_text(all_cinemas[cinema[update.message.chat_id]](date=date_).get_format_events(),
                                     parse_mode=constants.ParseMode.HTML)
 
 
 async def after_tomorrow(update, context):
     global cinema
     date_ = date.today() + timedelta(days=2)
-    await update.message.reply_text(all_cinemas[cinema](date=date_).get_format_events(),
+    await update.message.reply_text(all_cinemas[cinema[update.message.chat_id]](date=date_).get_format_events(),
                                     parse_mode=constants.ParseMode.HTML)
 
 
@@ -56,8 +61,8 @@ def main():
 
     command_start = CommandHandler("start", start)
     application.add_handler(command_start)
-    command_cinema_art_holle = CommandHandler("CinemaArtHall", write_cinema)
-    application.add_handler(command_cinema_art_holle)
+    cinema_name = MessageHandler(filters.TEXT & ~filters.COMMAND, write_cinema)
+    application.add_handler(cinema_name)
     command_today = CommandHandler("today", today)
     application.add_handler(command_today)
     command_tomorrow = CommandHandler("tomorrow", tomorrow)
