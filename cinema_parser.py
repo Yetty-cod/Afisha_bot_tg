@@ -76,3 +76,33 @@ class CinemaArtHallNorilskParser(Parser):
 
             self.events.append({'name': name, 'age': age, 'year_and_country': country,
                                 'genres': genres, 'price': price, 'time': time})
+
+
+class RodinaNorilsk(Parser):
+    def __init__(self, date=datetime.date.today()):
+        super().__init__()
+
+        self.date = date.strftime('%Y/%m/%d')
+
+        response = requests.get('http://кино-родина.рф/raspisanie')
+        soup = BeautifulSoup(response.text, 'lxml')
+        info = soup.find_all('div', {'class': 'activity'})
+
+        # for el in info:
+        #     soup_ = BeautifulSoup(str(el), 'lxml')
+        #
+        #     name = soup_.find('div', {'class': 'title'}).text
+        #     age = soup_.find('div', {'class': 'age'})['data-age']
+        #
+        #     genres = soup_.find('div', {'class': 'genres'}).text
+        #
+        #     country = soup_.find('div', {'class': 'country'}).text
+        #
+        #     price = soup_.find_all('div', {'class': 'price'})
+        #     price = [el.text.replace(' ', ' ') for el in price]
+        #     time = soup_.find_all('div', {'class': 'show-time'})
+        #     time = [el.text for el in time]
+        #
+        #     self.events.append({'name': name, 'age': age, 'year_and_country': country,
+        #                         'genres': genres, 'price': price, 'time': time})
+
