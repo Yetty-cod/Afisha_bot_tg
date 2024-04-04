@@ -30,10 +30,11 @@ class Parser:
 
     def get_format_events(self):
         res = [f"Синема Арт Холл, Норильск\n{self.date}"]
-        if not self.events:
+        events = self.get_events()
+        if not events:
             return f'Синема Арт Холл, Норильск\n{self.date}\n\nЗдесь пока пусто'
 
-        for el in self.events:
+        for el in events:
             cinema = f'<b>{el["name"]}</b>\n' \
                      f'<i>{el["year_and_country"]}\n' \
                      f'{el["genres"]}\n' \
