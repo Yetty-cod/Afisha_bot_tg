@@ -12,16 +12,26 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-async def load_all_schedules():
+def load_all_schedules(*args):
     '''
     Функция обновляет словарь с распианием всех кинотеатров
     :return:
     '''
     for el in all_cinemas_schedules:
         logger.info(f'Start loading {el} schedule')
-        all_cinemas_schedules[el]['today'] = all_cinemas[el](date.today())
-        all_cinemas_schedules[el]['tomorrow'] = all_cinemas[el](date.today() + timedelta(days=1))
-        all_cinemas_schedules[el]['today'] = all_cinemas[el](date.today() + timedelta(days=2))
+
+        cinema = all_cinemas[el](date.today())
+        all_cinemas_schedules[el]['today'] = cinema.get_events()
+        cinema.close_page()
+
+        cinema = all_cinemas[el](date.today())
+        all_cinemas_schedules[el]['tomorrow'] = all_cinemas[el](date.today() + timedelta(days=1)).get_events()
+        cinema.close_page()
+
+        cinema = all_cinemas[el](date.today())
+        all_cinemas_schedules[el]['after_tomorrow'] = all_cinemas[el](date.today() + timedelta(days=2)).get_events()
+        cinema.close_page()
+
         logger.info(f'Finish loading {el} schedule')
     logger.info('Finish load all schedules')
 

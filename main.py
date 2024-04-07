@@ -1,7 +1,7 @@
 import logging
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
 from functions import *
-import schedule
+import datetime
 
 
 # Запускаем логгирование
@@ -25,15 +25,14 @@ def main():
     command_after_tomorrow = CommandHandler("after_tomorrow", after_tomorrow)
     application.add_handler(command_after_tomorrow)
 
+    load_all_schedules()  # грузим расписание в первый раз
+
+    jq = application.job_queue
+    job_minute = jq.run_repeating(load_all_schedules, interval=datetime.timedelta(days=1), first=datetime.time(0, 1))
+
     application.run_polling()
-
-    schedule.every().day.at("00:01").do(load_all_schedules)
-
-    while True:
-        schedule.run_pending()
 
 
 # Запускаем функцию main() в случае запуска скрипта.
 if __name__ == '__main__':
-    load_all_schedules()
     main()
