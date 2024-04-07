@@ -4,12 +4,6 @@ import requests
 import datetime
 
 
-op = webdriver.ChromeOptions()
-op.add_argument('--headless')
-
-driver = webdriver.Chrome(options=op)
-
-
 class Parser:
     '''
     Родительский класс парсера расписания кино
@@ -50,6 +44,13 @@ class Parser:
             res.append(cinema)
 
         return '\n\n'.join(res)
+
+    def close_page(self):
+        '''
+        Метод закрывает страницу браузера для парсеров динамических страниц. Для статических страниц остаётся pass
+        :return:
+        '''
+        pass
 
 
 class CinemaArtHallNorilskParser(Parser):
@@ -92,9 +93,14 @@ class RodinaNorilskParser(Parser):
         self.name = 'Родина, Норильск'
         self.date = date.strftime('%Y/%m/%d')
 
-        driver.get('http://кино-родина.рф/raspisanie')
+        op = webdriver.ChromeOptions()
+        op.add_argument('--headless')
 
-        soup = BeautifulSoup(driver.page_source, 'lxml')
+        self.driver = webdriver.Chrome(options=op)
+
+        self.driver.get('http://кино-родина.рф/raspisanie')
+
+        soup = BeautifulSoup(self.driver.page_source, 'lxml')
         info = soup.find_all('div', {'class': 'activity'})
 
         for el in info:
@@ -112,6 +118,9 @@ class RodinaNorilskParser(Parser):
 
             self.events.append({'name': name, 'age': age, 'tags': tags,
                                 'price': price, 'time': time})
+
+    def close_page(self):
+        self.driver.close()
 
 
 class KDCVisotskogoTalnahParser(Parser):
@@ -121,9 +130,14 @@ class KDCVisotskogoTalnahParser(Parser):
         self.name = 'КДЦ Высотского, Талнах'
         self.date = date.strftime('%Y/%m/%d')
 
-        driver.get('https://кдц-высоцкого.рф/repertuar/')
+        op = webdriver.ChromeOptions()
+        op.add_argument('--headless')
 
-        soup = BeautifulSoup(driver.page_source, 'lxml')
+        self.driver = webdriver.Chrome(options=op)
+
+        self.driver.get('https://кдц-высоцкого.рф/repertuar/')
+
+        soup = BeautifulSoup(self.driver.page_source, 'lxml')
         info = soup.find_all('div', {'class': 'activity'})
 
         for el in info:
@@ -141,3 +155,6 @@ class KDCVisotskogoTalnahParser(Parser):
 
             self.events.append({'name': name, 'age': age, 'tags': tags,
                                 'price': price, 'time': time})
+
+    def close_page(self):
+        self.driver.close()
