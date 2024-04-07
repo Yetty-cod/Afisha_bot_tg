@@ -2,7 +2,7 @@ import logging
 
 from telegram import constants
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
-from cinema_parser import CinemaArtHallNorilskParser
+from cinema_parser import CinemaArtHallNorilskParser, RodinaNorilskParser, KDCVisotskogoTalnahParser
 from telegram import ReplyKeyboardMarkup
 
 from datetime import date, timedelta
@@ -13,9 +13,10 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-all_cinemas = {'CinemaArtHall': CinemaArtHallNorilskParser}
+all_cinemas = {'CinemaArtHall': CinemaArtHallNorilskParser, 'Rodina': RodinaNorilskParser,
+               'KDCVisotskogo': KDCVisotskogoTalnahParser}
 cinema = dict()
-keyboard_cinemas = [["CinemaArtHall"]]
+keyboard_cinemas = [["CinemaArtHall", "Rodina", "KDCVisotskogo"]]
 
 
 async def start(update, context):
