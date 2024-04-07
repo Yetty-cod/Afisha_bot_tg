@@ -1,6 +1,7 @@
 import logging
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
 from functions import *
+import schedule
 
 
 # Запускаем логгирование
@@ -26,7 +27,13 @@ def main():
 
     application.run_polling()
 
+    schedule.every().day.at("00:01").do(load_all_schedules)
+
+    while True:
+        schedule.run_pending()
+
 
 # Запускаем функцию main() в случае запуска скрипта.
 if __name__ == '__main__':
+    load_all_schedules()
     main()

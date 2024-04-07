@@ -27,23 +27,9 @@ class Parser:
             сеанс price[i] должен соответствовать сеансу time[i]
         :return: список словарей с расписанием
         '''
-        return self.events
-
-    def get_format_events(self):
-        res = [f"{self.name}\n{self.date}"]
-        events = self.get_events()
-        if not events:
-            return f'{self.name}\n{self.date}\n\nЗдесь пока пусто'
-
-        for el in events:
-            cinema = f'<b>{el["name"]}</b>\n' \
-                     f'<i>{el["tags"]}\n' \
-                     f'{el["age"]}</i>\n'
-            for i in range(len(el['price'])):
-                cinema += f'~ {el["price"][i]}    {el["time"][i]}\n'
-            res.append(cinema)
-
-        return '\n\n'.join(res)
+        events = self.events[:]
+        res = {'name': self.name, 'date': self.date, 'events': events}
+        return res
 
     def close_page(self):
         '''
