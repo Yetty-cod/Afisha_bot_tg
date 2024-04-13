@@ -1,4 +1,7 @@
-from cinema_parser import *
+from parsers.base_parser import Parser
+from parsers.cinema_art_hall_parser import CinemaArtHallNorilskParser
+from parsers.rodina_parser import RodinaNorilskParser
+from parsers.KDC_Visotskogo_parser import KDCVisotskogoTalnahParser
 
 
 all_cinemas = {'CinemaArtHall': CinemaArtHallNorilskParser, 'Rodina': RodinaNorilskParser,
