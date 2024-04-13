@@ -3,6 +3,7 @@ from telegram import constants
 
 from datetime import date, timedelta
 import logging
+from random import choice
 
 from keyboards import *
 from all_cinemas_and_users_dicts import all_cinemas, users_cinema, all_cinemas_schedules
@@ -58,6 +59,37 @@ def format_schedule(schedule):
     return '\n\n'.join(res)
 
 
+def film_choice():
+    '''
+    Функция формирует строку с преложением куда сходить для разных категорий
+    :return: строка с html тегами
+    '''
+    res = {'family': set(), 'pair': set(), 'self': set(), 'friends': set()}
+    for el in all_cinemas_schedules:
+        for day in all_cinemas_schedules[el]:
+            for event in all_cinemas_schedules[el][day]['events']:
+                if event['age'] in ('6+', '0+', '12+'):
+                    res['family'].add(event['name'])
+                if any(genre in event['tags'] for genre in
+                       ('Триллер', 'Приключения', 'Боевик', 'Ужасы', 'Вестерн', 'Фантастика')):
+                    res['self'].add(event['name'])
+                    res['friends'].add(event['name'])
+                if any(genre in event['tags'] for genre in
+                       ('Мелодрама', 'Драма', 'Приключения', 'Фантастика')):
+                    res['pair'].add(event['name'])
+    general = 'Вот куда можно сходить\n\n'
+    general += f'Если вы идёте в кино с семьёй, вам наверняка подойдёт\n' \
+               f'<i>{choice(list(res["family"])) if res["family"] else "Ничего не нашли"}</i>\n\n'
+    general += f'С друзьями можно посмотреть\n' \
+               f'<i>{choice(list(res["friends"])) if res["friends"] else "Ничего не нашли"}</i>\n\n'
+    general += f'Со второй половинкой посмотрите\n' \
+               f'<i>{choice(list(res["pair"])) if res["pair"] else "Ничего не нашли"}</i>\n\n'
+    general += f'Если вы идёте в кино сами, вас может заинтересовать\n' \
+               f'<i>{choice(list(res["self"])) if res["self"] else "Ничего не нашли"}</i>\n\n'
+
+    return general
+
+
 async def start(update, context):
     '''Функция для старта, выводит подсказку и клавиатуру'''
     markup = ReplyKeyboardMarkup(keyboard_cinemas, one_time_keyboard=False)
@@ -67,7 +99,9 @@ async def start(update, context):
 async def write_cinema(update, context):
     '''Функция запускается когда пользователь выбирает кинотеатр.
     Нужна для записи выбранного кинотеатра и вывода клавиатуры с выбором дня'''
-    if update.message.text in all_cinemas:
+    if update.message.text == 'На какой фильм сходить?':
+        await update.message.reply_text(film_choice(), parse_mode=constants.ParseMode.HTML)
+    elif update.message.text in all_cinemas:
         logger.info(update.message.chat_id)
         users_cinema[update.message.chat_id] = update.message.text
 
