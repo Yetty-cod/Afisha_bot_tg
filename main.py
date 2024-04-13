@@ -8,9 +8,11 @@ import datetime
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+TOKEN = '6900333723:AAHtoADh6ZOmdBfG3bkhl5NpyBqIjr31aXU'
+
 
 def main():
-    application = Application.builder().token('6764108898:AAFjiDWFaVNmxtnGhz6_AwcEl-zxPAHXDZU').build()
+    application = Application.builder().token(TOKEN).build()
 
     command_start = CommandHandler("start", start)
     application.add_handler(command_start)
