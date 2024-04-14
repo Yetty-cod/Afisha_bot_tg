@@ -1,5 +1,4 @@
-from telegram import ReplyKeyboardMarkup
-from telegram import constants
+from telegram import ReplyKeyboardMarkup, constants
 
 from datetime import date, timedelta
 import logging

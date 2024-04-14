@@ -9,7 +9,7 @@ class Parser:
 
     def get_events(self):
         '''
-        Метод возвращает список словарей с информацией о расписании.
+        Метод возвращает список словарей с информацией о расписании. Формат в записке
         '''
         events = self.events[:]
         res = {'name': self.name, 'date': self.date, 'events': events}
