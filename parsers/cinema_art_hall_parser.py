@@ -1,4 +1,4 @@
-from base_parser import Parser
+from parsers.base_parser import Parser
 from requests import get
 from bs4 import BeautifulSoup
 from datetime import date

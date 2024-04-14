@@ -1,4 +1,4 @@
-from base_parser import Parser
+from parsers.base_parser import Parser
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from datetime import date
