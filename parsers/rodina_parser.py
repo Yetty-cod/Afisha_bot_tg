@@ -1,7 +1,11 @@
 from parsers.base_parser import Parser
-from selenium import webdriver
+
 from bs4 import BeautifulSoup
 from datetime import date
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class RodinaNorilskParser(Parser):
@@ -17,7 +21,7 @@ class RodinaNorilskParser(Parser):
         op = webdriver.ChromeOptions()
         op.add_argument('--headless')
 
-        self.driver = webdriver.Chrome(options=op)
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=op)
 
         self.driver.get('http://кино-родина.рф/raspisanie')
 
