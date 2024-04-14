@@ -21,7 +21,8 @@ class KDCVisotskogoTalnahParser(Parser):
         op = webdriver.ChromeOptions()
         op.add_argument('--headless')
 
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=op)
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(driver_version='120').install()),
+                                       options=op)
 
         self.driver.get('https://кдц-высоцкого.рф/repertuar/')
 
